@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>JFT Expression and Conversation Mock Test</title>
+<style>
+  :root{
+    --navy:#0f1b3d;
+    --navy2:#152451;
+    --orange:#f6a94a;
+    --orange-deep:#e08a1f;
+    --red:#e5323a;
+    --red-deep:#c11f27;
+    --blue:#2f6fed;
+    --green:#1fa24a;
+    --green-deep:#158238;
+    --purple:#6d3fc9;
+    --optred:#fde3e3;--optred-b:#f2a4a4;
+    --optblue:#e1ecfd;--optblue-b:#a9c6f7;
+    --optgreen:#e1f7e6;--optgreen-b:#a7dcb4;
+    --optyellow:#fdf3d8;--optyellow-b:#eccf7d;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0;padding:0;height:100%;
+    font-family:'Segoe UI', 'Hind Siliguri', Arial, sans-serif;
+    background:#eef0f4;
+    -webkit-user-select:none;-moz-user-select:none;user-select:none;
+  }
+  img{-webkit-user-drag:none;user-select:none;pointer-events:none;}
+  body{-webkit-touch-callout:none;}
+
+  .app{display:flex;flex-direction:column;height:100vh;}
+
+  /* ===== WATERMARK (JFT & SSW MOCK TEST) ===== */
+  .wm-layer{
+    position:fixed;inset:0;z-index:5000;
+    pointer-events:none;
+    overflow:hidden;
+    display:flex;flex-wrap:wrap;
+    align-content:flex-start;
+    transform:rotate(-28deg) scale(1.4);
+    opacity:.10;
+  }
+  .wm-item{
+    color:#0f1b3d;
+    font-weight:800;
+    font-size:13px;
+    white-space:nowrap;
+    padding:26px 34px;
+    line-height:1.3;
+    text-align:center;
+  }
+  @media (min-width:700px){
+    .wm-item{font-size:15px;padding:32px 42px;}
+  }
+
+  header{
+    background:var(--navy);color:#fff;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:10px 18px;flex-wrap:wrap;gap:8px;
+  }
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand .logo{
+    width:40px;height:40px;border-radius:10px;
+    background:linear-gradient(135deg,#2a3d78,#0f1b3d);
+    display:flex;align-items:center;justify-content:center;
+    font-size:20px;border:2px solid #3a5088;
+  }
+  .brand-text .title{font-weight:800;font-size:16px;letter-spacing:.5px;}
+  .brand-text .sub{font-size:11px;opacity:.75;}
+  .timer-box{text-align:center;}
+  .timer-label{font-size:11px;opacity:.8;}
+  .timer-value{font-size:20px;font-weight:800;color:#ffd23f;letter-spacing:1px;}
+  .cand-box{text-align:right;font-size:12px;}
+  .cand-box .id{font-weight:700;font-size:14px;}
+  .finish-btn{
+    background:var(--red);color:#fff;border:none;
+    padding:10px 16px;border-radius:8px;font-weight:700;
+    font-size:13px;display:flex;align-items:center;gap:6px;cursor:pointer;
+  }
+  .finish-btn:active{background:var(--red-deep);}
+
+  .body-wrap{flex:1;display:flex;overflow:hidden;}
+
+  .sidebar{
+    width:110px;background:#fff;border-right:1px solid #e2e5ec;
+    display:flex;flex-direction:column;padding:12px 8px;
+    overflow-y:auto;
+  }
+  .qgrid{display:flex;gap:6px;}
+  .qnums{flex:1;display:flex;flex-direction:column;gap:6px;}
+  .qnum{
+    height:34px;border:2px solid var(--orange);border-radius:8px;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:14px;color:#333;background:#fff;
+    cursor:pointer;transition:.2s;
+  }
+  .qnum.current{background:var(--orange);color:#fff;}
+  .qnum.answered{background:var(--red);border-color:var(--red-deep);color:#fff;}
+  .qnum.answered.current{background:var(--red-deep);}
+  .progress-track{
+    width:10px;border-radius:6px;background:#f1d9d9;
+    position:relative;overflow:hidden;
+  }
+  .progress-fill{
+    position:absolute;bottom:0;left:0;width:100%;
+    background:var(--red);height:0%;transition:height .3s;
+  }
+  .sections{margin-top:14px;display:flex;flex-direction:column;gap:6px;}
+  .sec-btn{
+    border:none;border-radius:8px;color:#fff;font-weight:700;font-size:11px;
+    padding:10px 6px;text-align:left;cursor:pointer;line-height:1.2;
+    opacity:.55;
+  }
+  .sec-btn.active{opacity:1;box-shadow:0 0 0 2px #ffffffaa inset;}
+  .sec-vocab{background:var(--red);}
+  .sec-conv{background:var(--blue);}
+  .sec-listen{background:var(--green);}
+  .sec-read{background:var(--purple);}
+
+  main{flex:1;padding:20px 24px;overflow-y:auto;display:flex;flex-direction:column;}
+  .qhead{display:flex;align-items:flex-start;gap:14px;margin-bottom:14px;}
+  .qbadge{
+    background:var(--navy);color:#fff;font-weight:800;font-size:16px;
+    width:34px;height:34px;border-radius:8px;display:flex;
+    align-items:center;justify-content:center;flex-shrink:0;
+  }
+  .instruction{font-size:16px;font-weight:600;color:#1b1b1b;padding-top:4px;}
+  .lang-row{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
+  .lang-btn{
+    background:var(--navy);color:#fff;border:none;border-radius:8px;
+    padding:9px 14px;font-size:13px;font-weight:700;cursor:pointer;
+    display:flex;align-items:center;gap:6px;
+  }
+  .lang-btn.on{background:var(--orange-deep);}
+  .translation-box{
+    background:#fff7e6;border:1px solid var(--orange);border-radius:8px;
+    padding:10px 14px;font-size:14px;margin-bottom:16px;display:none;color:#3a2e0a;
+  }
+  .translation-box.show{display:block;}
+
+  .content-area{margin-bottom:20px;}
+  .sentence-box{
+    background:var(--optblue);border:1px solid var(--optblue-b);
+    border-radius:8px;padding:20px 22px;font-size:26px;line-height:1.6;
+    margin-bottom:6px;
+  }
+  .illustration-wrap{
+    display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin-bottom:6px;
+  }
+  .illustration-box{
+    width:220px;height:180px;border:1px solid #ddd;border-radius:10px;
+    background:#fafafa;display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;margin-bottom:14px;
+  }
+  .illustration-box svg{width:70%;height:70%;}
+  .emoji-icon{font-size:90px;line-height:1;filter:drop-shadow(0 3px 6px rgba(0,0,0,.15));}
+
+  .dialog-wrap{background:var(--optblue);border:1px solid var(--optblue-b);border-radius:8px;padding:18px 20px;margin-bottom:20px;max-width:680px;}
+  .dialog-line{display:flex;gap:10px;align-items:flex-start;margin-bottom:14px;font-size:19px;line-height:1.5;}
+  .dialog-line:last-child{margin-bottom:0;}
+  .speaker{font-weight:800;color:var(--navy);flex-shrink:0;min-width:56px;}
+  .blank-box{
+    display:inline-block;min-width:130px;border:2px solid var(--red);
+    border-radius:6px;background:#fff;padding:4px 10px;margin:0 3px;
+    text-align:center;color:#bbb;font-size:16px;
+  }
+
+  .audio-wrap{display:flex;flex-direction:column;align-items:center;gap:10px;margin:20px 0 30px;}
+  .audio-btn{
+    width:84px;height:84px;border-radius:50%;border:none;
+    background:var(--green);color:#fff;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 4px 14px rgba(31,162,74,.4);
+  }
+  .audio-btn:active{transform:scale(.94);}
+  .audio-btn.playing{background:var(--green-deep);animation:pulse 1s infinite;}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(31,162,74,.5);}70%{box-shadow:0 0 0 16px rgba(31,162,74,0);}100%{box-shadow:0 0 0 0 rgba(31,162,74,0);}}
+  .audio-hint{font-size:13px;color:#666;}
+  .audio-count{font-size:13px;color:#999;}
+
+  .reading-wrap{display:flex;gap:22px;flex-wrap:wrap;margin-bottom:18px;}
+  .passage-col{flex:1 1 340px;max-width:420px;}
+  .question-col{flex:1 1 320px;}
+
+  .passage-box{background:#fff;border:1px solid #ddd;border-radius:10px;padding:16px 18px;font-size:15px;line-height:1.7;color:#222;}
+  .flyer-title{font-size:18px;font-weight:800;color:var(--navy);margin:0 0 10px;}
+  .flyer-orange{border:2px solid var(--orange);background:#fffaf0;}
+  .flyer-pink{border:2px solid #e88ec2;background:#fff5fb;}
+  .flyer-teal{border:2px solid #35b7ad;background:#f1fdfc;}
+  .flyer-blue{border:2px solid var(--blue);background:#f2f6ff;}
+  .passage-box p{margin:0 0 8px;}
+  .passage-box hr{border:none;border-top:1px solid #e2e2e2;margin:8px 0;}
+
+  .remote-mini{display:flex;flex-direction:column;gap:8px;margin-top:10px;max-width:220px;}
+  .remote-btn{background:#f4f4f4;border:1px solid #ccc;border-radius:8px;padding:8px 12px;font-size:15px;display:flex;gap:8px;align-items:center;}
+  .remote-btn b{background:var(--navy);color:#fff;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;}
+
+  .sns-header{font-weight:700;color:var(--navy);margin-bottom:6px;}
+
+  .med-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px;}
+  .med-table th,.med-table td{border:1px solid #ccc;padding:6px 8px;text-align:center;}
+  .med-table th{background:var(--navy);color:#fff;font-weight:700;}
+  .med-table td:first-child{text-align:left;}
+
+  .q-block{background:#fdf3d8;border-radius:8px;padding:10px 14px;font-size:16px;font-weight:700;color:#3a2e0a;margin-bottom:10px;}
+
+  .options{display:flex;flex-direction:column;gap:12px;max-width:640px;}
+  .opt{
+    display:flex;align-items:center;gap:14px;
+    border-radius:10px;padding:16px 18px;font-size:20px;cursor:pointer;
+    border:2px solid transparent;transition:.15s;
+  }
+  .opt .dot{
+    width:20px;height:20px;border-radius:50%;border:2px solid #999;
+    background:#fff;flex-shrink:0;
+  }
+  .opt.o0{background:var(--optred);border-color:var(--optred-b);}
+  .opt.o1{background:var(--optblue);border-color:var(--optblue-b);}
+  .opt.o2{background:var(--optgreen);border-color:var(--optgreen-b);}
+  .opt.o3{background:var(--optyellow);border-color:var(--optyellow-b);}
+  .opt.selected{border-color:var(--navy);box-shadow:0 0 0 2px var(--navy) inset;}
+  .opt.selected .dot{background:var(--navy);border-color:var(--navy);}
+
+  .nav-row{
+    margin-top:auto;display:flex;justify-content:space-between;
+    padding-top:16px;
+  }
+  .nav-btn{
+    background:var(--navy);color:#fff;border:none;border-radius:8px;
+    padding:12px 22px;font-size:15px;font-weight:700;cursor:pointer;
+    display:flex;align-items:center;gap:6px;
+  }
+  .nav-btn:disabled{opacity:.4;}
+
+  .modal-overlay{
+    position:fixed;inset:0;background:rgba(10,15,30,.75);
+    display:none;align-items:center;justify-content:center;z-index:50;
+  }
+  .modal-overlay.show{display:flex;}
+  .modal-box{
+    background:#fff;border-radius:14px;padding:30px 26px;text-align:center;
+    max-width:340px;width:90%;
+  }
+  .modal-box h2{margin:0 0 10px;color:var(--navy);font-size:20px;}
+  .modal-box p{color:#444;font-size:14px;margin:0 0 18px;}
+  .countdown-num{font-size:48px;font-weight:800;color:var(--red);margin:10px 0;}
+  .modal-actions{display:flex;gap:10px;justify-content:center;}
+  .modal-btn{
+    border:none;border-radius:8px;padding:10px 18px;font-weight:700;
+    cursor:pointer;font-size:14px;
+  }
+  .modal-btn.confirm{background:var(--red);color:#fff;}
+  .modal-btn.cancel{background:#e5e7eb;color:#333;}
+
+  .result-box{
+    background:#fff;border-radius:14px;padding:30px;max-width:420px;width:90%;text-align:center;
+  }
+  .result-box .score{font-size:44px;font-weight:800;color:var(--navy);}
+  .result-box .pass{color:var(--green);font-weight:800;font-size:18px;margin-top:6px;}
+  .result-box .fail{color:var(--red);font-weight:800;font-size:18px;margin-top:6px;}
+  .section-scores{margin-top:18px;text-align:left;font-size:13px;color:#333;display:flex;flex-direction:column;gap:6px;}
+  .section-scores div{display:flex;justify-content:space-between;border-bottom:1px solid #eee;padding-bottom:4px;}
+
+  @media (max-width:760px){
+    .sidebar{width:78px;padding:8px 5px;}
+    .qnum{height:28px;font-size:12px;border-width:2px;}
+    .sec-btn{font-size:9px;padding:6px 4px;}
+    main{padding:14px;}
+    .instruction{font-size:14px;}
+    .sentence-box{font-size:19px;padding:14px;}
+    .dialog-line{font-size:16px;}
+    .blank-box{min-width:90px;font-size:13px;}
+    .passage-box{font-size:13px;}
+    .opt{font-size:15px;padding:12px 14px;}
+    .illustration-box{width:130px;height:110px;}
+    .emoji-icon{font-size:56px;}
+    header{padding:8px 10px;flex-wrap:wrap;}
+    .brand-text .title{font-size:13px;}
+    .brand .logo{width:32px;height:32px;font-size:15px;}
+    .timer-value{font-size:15px;}
+    .timer-label{font-size:9px;}
+    .cand-box{font-size:9px;}
+    .cand-box .id{font-size:11px;}
+    .finish-btn{padding:7px 9px;font-size:10px;}
+    .qhead{gap:8px;}
+    .qbadge{width:28px;height:28px;font-size:13px;}
+    .lang-btn{font-size:11px;padding:7px 10px;}
+    .reading-wrap{flex-direction:column;}
+  }
+  @media (max-width:400px){
+    .sidebar{width:66px;}
+    .qnum{height:24px;font-size:11px;}
+    .sec-btn{font-size:8px;}
+  }
+
+  /* ===== LOGIN SCREEN ===== */
+  #loginScreen{position:fixed;inset:0;background:linear-gradient(135deg,#0f1b3d,#152451);
+    display:flex;align-items:center;justify-content:center;z-index:200;padding:20px;}
+  .login-card{background:#fff;border-radius:16px;padding:34px 26px;max-width:380px;width:100%;
+    box-shadow:0 20px 50px rgba(0,0,0,0.4);text-align:center;}
+  .login-card .logo{font-size:44px;margin-bottom:6px;}
+  .login-card h1{font-size:19px;color:#0f1b3d;margin:0 0 4px;}
+  .login-card p.sub{font-size:12px;color:#888;margin:0 0 20px;}
+  .login-card input{width:100%;padding:13px;margin-bottom:12px;border:1px solid #ccc;
+    border-radius:8px;font-size:16px;text-align:left;}
+  .login-card button{width:100%;padding:14px;background:var(--navy);color:#fff;border:none;
+    border-radius:8px;font-size:16px;font-weight:700;cursor:pointer;}
+  .login-card button:disabled{opacity:0.6;}
+  .login-error{color:var(--red);font-size:13px;margin-top:10px;min-height:16px;}
+  .app{display:none;}
+
+  /* ===== START-COUNTDOWN reuse of modal-box already exists ===== */
+
+  /* ===== JFT CERTIFICATE RESULT ===== */
+  .cert-topbar{background:linear-gradient(135deg,#ff9100,#e65100);color:#fff;display:flex;align-items:center;justify-content:space-between;
+    padding:10px 16px;border-radius:10px 10px 0 0;font-weight:800;font-size:15px;letter-spacing:1px;}
+  .cert-topbar .cert-topbar-icons{display:flex;gap:8px;}
+  .cert-topbar .cert-topbar-icons span{width:26px;height:26px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:13px;}
+  .cert-topbar .ic-print{background:#4caf50;}
+  .cert-topbar .ic-expand{background:#f6a94a;}
+  .cert-topbar .ic-close{background:#e5323a;cursor:pointer;}
+  .cert-greenline{height:4px;background:linear-gradient(90deg,#ffab00,#e65100,#ffab00);}
+  .cert-result-text{font-size:11px;color:#333;line-height:1.6;margin:10px 0 14px;padding:0 2px;}
+  .cert-result-text .en{color:#666;font-size:10px;}
+  .cert-box{background:#fff;color:#111;border-radius:0 0 10px 10px;padding:20px;max-width:480px;width:100%;
+    max-height:88vh;overflow-y:auto;margin:0 auto;box-shadow:0 20px 50px rgba(0,0,0,0.4);}
+  .cert-header{display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #e65100;padding-bottom:8px;margin-bottom:10px;}
+  .cert-logo{font-weight:900;font-size:18px;color:#ff9100;border:2px solid #ff9100;padding:2px 8px;border-radius:4px;}
+  .cert-org{text-align:right;font-size:11px;color:#555;line-height:1.3;}
+  .cert-org span{font-size:10px;}
+  .cert-title{font-weight:bold;font-size:14px;text-align:center;margin-top:8px;}
+  .cert-title-en{font-size:10px;text-align:center;color:#777;margin-bottom:14px;}
+  .cert-info-grid{display:flex;gap:12px;background:#f2f2f2;border-radius:8px;padding:12px;margin-bottom:14px;}
+  .cert-photo{width:60px;height:70px;background:#ddd;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:32px;flex-shrink:0;}
+  .cert-info-fields{flex:1;display:flex;flex-direction:column;gap:4px;}
+  .cert-field{display:flex;justify-content:space-between;font-size:11px;border-bottom:1px dotted #ccc;padding:2px 0;}
+  .cf-label{color:#666;}
+  .cf-value{font-weight:bold;color:#111;}
+  .cert-score-box{background:#fafafa;border:1px solid #ddd;border-radius:8px;padding:14px;margin-bottom:14px;text-align:center;}
+  .cert-score-label{font-size:12px;color:#555;}
+  .cert-score-num{font-size:32px;font-weight:900;color:#e65100;margin:4px 0;}
+  .cert-score-range{font-size:9px;color:#888;margin-bottom:10px;}
+  .cert-bar-wrap{position:relative;height:14px;border-radius:7px;
+    background:linear-gradient(90deg,#d50000 0%,#d50000 54%,#ff6d00 54%,#ff6d00 66%,#ffd600 66%,#ffd600 79%,#ffab00 79%,#e65100 100%);
+    margin:20px 6px 4px;}
+  .cert-marker{position:absolute;top:-18px;transform:translateX(-50%);font-size:14px;color:#111;transition:left .8s ease;}
+  .cert-bar-labels{position:relative;height:28px;font-size:9px;color:#666;margin:0 6px;}
+  .cert-bar-labels span{position:absolute;transform:translateX(-50%);text-align:center;line-height:1.2;}
+  .cert-level{text-align:center;font-size:15px;font-weight:bold;padding:10px;border-radius:6px;margin-bottom:16px;}
+  .cert-level.pass{background:linear-gradient(135deg,#fff3e0,#ffcc80);color:#e65100;}
+  .cert-level.fail{background:#fdecea;color:#c0392b;}
+  .cert-sections{margin-bottom:16px;}
+  .cert-sec-title{font-size:12px;font-weight:bold;color:#555;margin-bottom:8px;}
+  .cert-sec-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:11px;}
+  .cert-sec-name{width:70px;flex-shrink:0;color:#444;}
+  .cert-sec-track{flex:1;height:8px;background:#eee;border-radius:4px;position:relative;}
+  .cert-sec-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#ff9100,#e65100);}
+  .cert-sec-pct{width:36px;text-align:right;font-weight:bold;color:#333;}
+  .cert-close-btn{width:100%;padding:12px;background:linear-gradient(135deg,#ff9100,#e65100);color:#fff;border:none;border-radius:6px;font-weight:bold;font-size:15px;}
+  .cert-review-btn{width:100%;padding:12px;background:#fff;color:#e65100;border:2px solid #e65100;border-radius:6px;
+    font-weight:bold;font-size:15px;margin-bottom:10px;cursor:pointer;}
+
+  /* ===== ANSWER REVIEW SCREEN (wrong answers only) ===== */
+  .review-wrap{max-width:480px;width:100%;margin:0 auto;background:#fff;border-radius:10px;overflow:hidden;
+    max-height:88vh;display:flex;flex-direction:column;}
+  .review-header{background:linear-gradient(135deg,#ff9100,#e65100);color:#fff;padding:14px 16px;
+    display:flex;align-items:center;justify-content:space-between;font-weight:800;font-size:15px;}
+  .review-header .rv-close{cursor:pointer;background:rgba(255,255,255,.25);width:28px;height:28px;border-radius:6px;
+    display:flex;align-items:center;justify-content:center;}
+  .review-body{padding:16px;overflow-y:auto;flex:1;}
+  .review-empty-msg{text-align:center;color:#2e7d32;font-weight:700;font-size:14px;padding:30px 10px;}
+  .rv-item{border:1px solid #f2c2a0;background:#fff8f2;border-radius:8px;padding:12px;margin-bottom:12px;}
+  .rv-qtag{font-size:11px;color:#e65100;font-weight:700;margin-bottom:6px;}
+  .rv-qtext{font-size:13px;color:#222;margin-bottom:10px;line-height:1.5;}
+  .rv-ans-row{display:flex;gap:8px;font-size:12px;margin-bottom:4px;align-items:flex-start;}
+  .rv-ans-label{width:80px;flex-shrink:0;font-weight:700;}
+  .rv-your{color:#c0392b;}
+  .rv-correct{color:#2e7d32;}
+  .cert-wrap{max-width:480px;width:100%;margin:0 auto;}
+</style>
+</head>
+<body oncontextmenu="return false;">
+
+<div class="wm-layer" id="wmLayer"></div>
+<script>
+(function(){
+  var layer = document.getElementById('wmLayer');
+  var text = 'JFT & SSW MOCK TEST\nWhatsApp: 01410 530650';
+  var count = 60;
+  var html = '';
+  for(var i=0;i<count;i++){
+    html += '<div class="wm-item">'+text.replace('\n','<br>')+'</div>';
+  }
+  layer.innerHTML = html;
+})();
+</script>
+
+
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="logo">🎓</div>
+    <h1>JFT Basic Mock Test</h1>
+    <p class="sub">Student ID と Password を入力してください</p>
+    <input type="text" id="studentIdInput" placeholder="Student ID" value="JFT 1" autocomplete="off">
+    <input type="text" id="passwordInput" placeholder="Password" value="JFT 1" autocomplete="off">
+    <button id="loginBtn" onclick="doLogin()">ログイン / Login</button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
+
+<div class="app">
+
+  <header>
+    <div class="brand">
+      <div class="logo">🎓</div>
+      <div class="brand-text">
+        <div class="title">JFT MOCK TEST</div>
+        <div class="sub">Japanese Language Test - Full</div>
+      </div>
+    </div>
+    <div class="timer-box">
+      <div class="timer-label">⏱ Total Time Remaining</div>
+      <div class="timer-value" id="timerDisplay">--:--</div>
+    </div>
+    <div class="cand-box">
+      Candidate ID:<br><span class="id" id="candId">---</span>
+    </div>
+    <button class="finish-btn" onclick="openFinishModal()">■ Finish Test</button>
+  </header>
+
+  <div class="body-wrap">
+    <div class="sidebar">
+      <div class="qgrid">
+        <div class="qnums" id="qnums"></div>
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      </div>
+      <div class="sections">
+        <button class="sec-btn sec-conv active" onclick="jumpSection('conv')">💬 Experience and conversation</button>
+      </div>
+    </div>
+
+    <main>
+      <div class="qhead">
+        <div class="qbadge" id="qBadge">1</div>
+        <div class="instruction" id="instructionText"></div>
+      </div>
+
+      <div class="lang-row">
+        <button class="lang-btn" id="lang1Btn" onclick="toggleLang(1)">📘 Language 1</button>
+        <button class="lang-btn" id="lang2Btn" onclick="toggleLang(2)">📗 Language 2</button>
+      </div>
+      <div class="translation-box" id="translationBox"></div>
+
+      <div class="content-area" id="contentArea"></div>
+
+      <div class="reading-wrap" id="readingWrap" style="display:none;">
+        <div class="passage-col" id="passageArea"></div>
+        <div class="question-col">
+          <div class="q-block" id="qBlock"></div>
+          <div class="options" id="optionsAreaReading"></div>
+        </div>
+      </div>
+
+      <div class="options" id="optionsArea"></div>
+
+      <div class="nav-row">
+        <button class="nav-btn" id="backBtn" onclick="goBack()">‹ Back</button>
+        <button class="nav-btn" id="nextBtn" onclick="goNext()">Next ›</button>
+      </div>
+    </main>
+  </div>
+</div>
+
+<div class="modal-overlay" id="finishModal">
+  <div class="modal-box">
+    <h2>Finish Test?</h2>
+    <p>Test শেষ করলে আর উত্তর পরিবর্তন করা যাবে না।</p>
+    <div class="modal-actions">
+      <button class="modal-btn cancel" onclick="closeFinishModal()">বাতিল</button>
+      <button class="modal-btn confirm" onclick="startFinishCountdown()">হ্যাঁ, শেষ করো</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="countdownModal">
+  <div class="modal-box">
+    <h2>Submitting Test...</h2>
+    <div class="countdown-num" id="countdownNum">10</div>
+    <p>অনুগ্রহ করে অপেক্ষা করুন</p>
+  </div>
+</div>
+
+<!-- START-OF-EXAM COUNTDOWN (after login submit) -->
+<div class="modal-overlay" id="startCountdownModal">
+  <div class="modal-box">
+    <h2>試験を準備しています...</h2>
+    <div class="countdown-num" id="startCountdownNum">10</div>
+    <p>Exam starting soon / পরীক্ষা শীঘ্রই শুরু হবে</p>
+  </div>
+</div>
+
+<!-- PROMETRIC STYLE CERTIFICATE RESULT SCREEN -->
+<div class="modal-overlay" id="resultModal">
+  <div class="cert-wrap">
+    <div class="cert-topbar">
+      <span>JFT & SSW MOCK TEST</span>
+      <div class="cert-topbar-icons">
+        <span class="ic-print">🖨</span>
+        <span class="ic-expand">⤢</span>
+        <span class="ic-close" onclick="closeCertificate()">✕</span>
+      </div>
+    </div>
+    <div class="cert-greenline"></div>
+    <div class="cert-box">
+      <div class="cert-header">
+        <div class="cert-logo">🎓</div>
+        <div class="cert-org">JFT & SSW MOCK TEST<br><span>WhatsApp: 01410 530650</span></div>
+      </div>
+      <div class="cert-title">日本語基礎テスト 判定結果通知書</div>
+      <div class="cert-title-en">Test for Basic Japanese - Notification of Assessment Results</div>
+
+      <div class="cert-info-grid">
+        <div class="cert-photo">👤</div>
+        <div class="cert-info-fields">
+          <div class="cert-field"><span class="cf-label">受験番号 / Registration No.</span><span class="cf-value" id="certRegNo">-</span></div>
+          <div class="cert-field"><span class="cf-label">氏名 / Name</span><span class="cf-value" id="certName">-</span></div>
+          <div class="cert-field"><span class="cf-label">国籍 / Nationality</span><span class="cf-value" id="certNationality">-</span></div>
+          <div class="cert-field"><span class="cf-label">生年月日 / DOB</span><span class="cf-value" id="certDob">-</span></div>
+          <div class="cert-field"><span class="cf-label">受験日 / Test Date</span><span class="cf-value" id="certDate">-</span></div>
+        </div>
+      </div>
+
+      <div class="cert-score-box">
+        <div class="cert-score-label">総合得点 / Total Score</div>
+        <div class="cert-score-num" id="certScore">-- 点</div>
+        <div class="cert-score-range">得点範囲: 10-250　|　判定基準点: 200 点<br>Range of Scores: 10-250 points　|　Passing Score: 200 points</div>
+        <div class="cert-bar-wrap">
+          <div class="cert-bar"></div>
+          <div class="cert-marker" id="certMarker" style="left:0%;">▲</div>
+        </div>
+        <div class="cert-bar-labels">
+          <span style="left:0%;">10</span>
+          <span style="left:56%;">145</span>
+          <span style="left:79%;">200</span>
+          <span style="left:100%;">250</span>
+        </div>
+      </div>
+
+      <div class="cert-result-text" id="certResultText"></div>
+
+      <div class="cert-level" id="certLevelText">-</div>
+
+      <div class="cert-sections">
+        <div class="cert-sec-title">セクション毎の正答率 / The percentage of correct answers for each section are as follows.</div>
+        <div id="certSectionBars"></div>
+      </div>
+
+      <button class="cert-review-btn" onclick="openAnswerReview()">📋 ভুল উত্তরগুলো দেখুন / Review Wrong Answers</button>
+      <button class="cert-close-btn" onclick="closeCertificate()">閉じる / Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- WRONG-ANSWER REVIEW SCREEN -->
+<div class="modal-overlay" id="answerReviewModal">
+  <div class="review-wrap">
+    <div class="review-header">
+      <span>ভুল উত্তর রিভিউ / Wrong Answer Review</span>
+      <span class="rv-close" onclick="closeAnswerReview()">✕</span>
+    </div>
+    <div class="review-body" id="answerReviewBody"></div>
+  </div>
+</div>
+
+<script>
+
+/* ================================================================
+   DEMO QUESTIONS  (এখানে শুধু questions গুলো change করবেন)
+   -------------------------------------------------------------
+   এই HTML টা সম্পূর্ণ standalone DEMO — কোনো Google Apps Script /
+   Google Sheet API-এর সাথে সংযোগ নাই। নিচের DEMO_QUESTIONS array
+   এডিট করেই নতুন প্রশ্ন বসাতে পারবেন। প্রতিটা প্রশ্নে থাকতে হবে:
+
+   section: 'Vocabulary' | 'Conversation' | 'Listening' | 'Reading'
+   type: vocab-illustration / vocab-sentence / vocab-b1 / vocab-c1 /
+         conversation / listening-hard / reading-notice
+   questionText: মূল প্রশ্ন (জাপানি)
+   questionTextBn: বাংলা অনুবাদ (Language 1 বাটনে দেখাবে)
+   audioScript: (Listening এ TTS পড়বে) / (Reading এ passage/notice টেক্সট)
+   seconds: Listening এ উত্তর দেওয়ার countdown সময়
+   topic: শুধু Reading এর কালার থিম বাছাই করতে ব্যবহার হয়
+   optionA/B/C/D + correctAnswer: 'A' | 'B' | 'C' | 'D'
+   ================================================================ */
+const DEMO_QUESTIONS = [
+  { section:'Conversation', lesson:'Demo', type:'vocab-sentence',
+    questionText:'明日試験があることはまだ誰も（　　　）ようです。',
+    questionTextBn:'আগামীকাল পরীক্ষা আছে, এটা এখনও কেউ (　　　) মনে হচ্ছে।',
+    optionA:'しらない', optionB:'わかりません', optionC:'しります', correctAnswer:'A' },
+
+  { section:'Conversation', lesson:'Demo', type:'vocab-sentence',
+    questionText:'この問題は（　　　）すぎで答えられません。',
+    questionTextBn:'এই প্রশ্নটা খুব (　　　) বলে উত্তর দেওয়া যাচ্ছে না।',
+    optionA:'むずかし', optionB:'むずかしく', optionC:'むずかしい', correctAnswer:'A' },
+
+  { section:'Conversation', lesson:'Demo', type:'vocab-sentence',
+    questionText:'テストはあまり（　　　）です。',
+    questionTextBn:'পরীক্ষাটা তেমন (　　　)।',
+    optionA:'やさしかった', optionB:'かんたん', optionC:'やさしくなかった', correctAnswer:'C' },
+
+  { section:'Conversation', lesson:'Demo', type:'vocab-sentence',
+    questionText:'田中さんはまだ（　　　）します。待ちましょう。',
+    questionTextBn:'তানাকা-সান এখনও (　　　)। চলুন অপেক্ষা করি।',
+    optionA:'きがえて', optionB:'きがえます', optionC:'きがえる', correctAnswer:'A' },
+
+  { section:'Conversation', lesson:'Demo', type:'vocab-sentence',
+    questionText:'雨がやんだら、母と（　　　）と思っています。',
+    questionTextBn:'বৃষ্টি থামলে মায়ের সাথে (　　　) ভাবছি।',
+    optionA:'出かけた', optionB:'出かけない', optionC:'出かけてる', correctAnswer:'A' },
+
+  { section:'Conversation', lesson:'Demo', type:'vocab-sentence',
+    questionText:'手にけがを（　　　）しまいました。',
+    questionTextBn:'হাতে আঘাত (　　　) ফেলেছি।',
+    optionA:'しに', optionB:'して', optionC:'した', correctAnswer:'B' },
+
+  { section:'Conversation', lesson:'Demo', type:'vocab-reading',
+    questionText:'このしまには電気も[[水道]]もなくて、生活はとても便利です。',
+    questionTextBn:'এই দ্বীপে বিদ্যুৎ ও [[জলের লাইন]] নেই, জীবন খুব সুবিধাজনক।',
+    optionA:'みずみち', optionB:'すいどう', optionC:'すいみち', correctAnswer:'B' },
+
+  { section:'Conversation', lesson:'Demo', type:'vocab-reading',
+    questionText:'[[病院]]はどこですか。',
+    questionTextBn:'[[হাসপাতাল]] কোথায়?',
+    optionA:'びょういん', optionB:'びよういん', optionC:'びよいん', correctAnswer:'A' },
+
+  { section:'Conversation', lesson:'Demo', type:'vocab-c1',
+    questionText:'田中さんは今日とても（　　　）そうですね。何かいいことがあったんです。',
+    questionTextBn:'তানাকা-সান আজ খুব (　　　) মনে হচ্ছে। নিশ্চয়ই ভালো কিছু হয়েছে।',
+    optionA:'たのしく', optionB:'たのしがる', optionC:'たのし', correctAnswer:'C' },
+
+  { section:'Conversation', lesson:'Demo', type:'vocab-c1',
+    questionText:'私の国は（　　　）暑いです。',
+    questionTextBn:'আমার দেশ (　　　) গরম।',
+    optionA:'一年中', optionB:'一年間', optionC:'一年', correctAnswer:'A' },
+
+  { section:'Conversation', lesson:'Demo', type:'conversation',
+    questionText:'昼のニュースを見ましたか、アメリカで（　　　）ですね。 / へえー、ほんとうですか？ / くわしいことがまだわからないそうです。 / こわいですね。',
+    questionTextBn:'দুপুরের খবর দেখেছেন? আমেরিকায় (　　　)। / ওহ, সত্যি? / বিস্তারিত এখনও জানা যায়নি বলে শোনা যাচ্ছে। / ভয়ংকর ব্যাপার।',
+    optionA:'ひこうきがおちましたそう', optionB:'ひこうきがおちそう', optionC:'ひこうきがおちたそう', correctAnswer:'C' },
+
+  { section:'Conversation', lesson:'Demo', type:'conversation',
+    questionText:'A：いっしょに　行けませんか？ / B：ええ、すみません、（　　　）',
+    questionTextBn:'A: একসাথে যেতে পারবেন না? / B: হ্যাঁ, দুঃখিত, (　　　)',
+    optionA:'またもういちどお願いします。', optionB:'また今度お願いします。', optionC:'またお願いします。', correctAnswer:'B' }
+];
+
+/* ================= STATE ================= */
+let questions = [];
+let current = 0;
+let answers = [];
+let currentLang = 0;
+let playCounts = [];
+let currentStudentId = '';
+let currentStudentName = '';
+let sectionRanges = {};
+let sectionLastIndex = {};
+let totalTimeMinutes = 60;
+let totalMarks = 250;
+let passMark = 200;
+
+const sectionMeta = {
+  Conversation:{label:'Experience and conversation', cls:'sec-conv', key:'conv'}
+};
+const sectionOrder = ['Conversation'];
+
+/* ================= LOGIN (DEMO: kono server call nai, offline) ================= */
+function doLogin(){
+  const id = document.getElementById('studentIdInput').value.trim();
+  const pw = document.getElementById('passwordInput').value.trim();
+  const errorEl = document.getElementById('loginError');
+
+  if(!id || !pw){
+    errorEl.textContent = 'IDとパスワードを入力してください。';
+    return;
+  }
+  errorEl.textContent = '';
+  currentStudentId = id;
+  currentStudentName = id;
+  beginExam();
+}
+
+/* ================= START EXAM (DEMO: local DEMO_QUESTIONS use kore, API nai) ================= */
+function beginExam(){
+  document.getElementById('loginError').textContent = '';
+
+  questions = DEMO_QUESTIONS.map(function(q){
+    return {
+      section: q.section,
+      lesson: q.lesson,
+      type: q.type,
+      instruction: getInstructionForType(q.type),
+      instructionBn: getInstructionBnForType(q.type),
+      questionText: q.questionText,
+      questionTextBn: q.questionTextBn || q.questionText,
+      audioScript: q.audioScript,
+      seconds: q.seconds,
+      topic: q.topic,
+      options: [q.optionA, q.optionB, q.optionC, q.optionD].filter(function(o){ return o !== undefined && o !== ''; }),
+      optionLetters: ['A','B','C','D'].filter(function(l, idx){ return [q.optionA,q.optionB,q.optionC,q.optionD][idx]; }),
+      correctAnswer: q.correctAnswer
+    };
+  });
+  answers = new Array(questions.length).fill(null);
+  playCounts = new Array(questions.length).fill(0);
+  totalTimeMinutes = 60;
+  totalMarks = 250;
+  passMark = 200;
+
+  buildSectionRanges();
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('candId').textContent = currentStudentId;
+  runStartCountdown();
+}
+
+/* ================= START-OF-EXAM COUNTDOWN ================= */
+
+function runStartCountdown(){
+  const modal = document.getElementById('startCountdownModal');
+  const numEl = document.getElementById('startCountdownNum');
+  modal.classList.add('show');
+  let c = 10;
+  numEl.textContent = c;
+  const iv = setInterval(()=>{
+    c--;
+    numEl.textContent = c;
+    if(c<=0){
+      clearInterval(iv);
+      modal.classList.remove('show');
+      launchExamScreen();
+    }
+  },1000);
+}
+
+function launchExamScreen(){
+  document.querySelector('.app').style.display = 'flex';
+  document.getElementById('candId').textContent = currentStudentId;
+  current = 0;
+  buildSidebarNums();
+  renderQuestion();
+  startTimer(totalTimeMinutes*60);
+}
+
+function getInstructionForType(type){
+  const map = {
+    'vocab-illustration':'Look at the illustration and choose the correct word.',
+    'vocab-sentence':'Read the sentence and choose the word that fits in ( ) most.',
+    'vocab-reading':'How do you write the underlined kanji word in hiragana. Choose the correct one.',
+    'vocab-b1':'Read the sentence and choose the word that fits in ( ) most.',
+    'vocab-c1':'Read the sentence and choose the kanji word that fits in ( ) most.',
+    'conversation':'Read the dialog and choose the expression that fits the most.',
+    'listening-hard':'Listen to the conversation and answer the question.',
+    'listening-hard-text':'Listen to the conversation and answer the question.',
+    'reading-notice':'Read the passage and answer the question.'
+  };
+  return map[type] || 'Choose the correct answer.';
+}
+function getInstructionBnForType(type){
+  const map = {
+    'vocab-illustration':'ছবিটা দেখো এবং সঠিক শব্দ বেছে নাও।',
+    'vocab-sentence':'বাক্যটা পড়ো এবং ( ) এ সবচেয়ে উপযুক্ত শব্দটা বেছে নাও।',
+    'vocab-reading':'আন্ডারলাইন করা কাঞ্জি শব্দটা হিরাগানায় কীভাবে লিখবে? সঠিকটা বেছে নাও।',
+    'vocab-b1':'বাক্যটা পড়ো এবং ( ) এ সবচেয়ে উপযুক্ত শব্দটা বেছে নাও।',
+    'vocab-c1':'বাক্যটা পড়ো এবং ( ) এ সবচেয়ে উপযুক্ত কাঞ্জি শব্দটা বেছে নাও।',
+    'conversation':'কথোপকথনটা পড়ো এবং সবচেয়ে উপযুক্ত অভিব্যক্তি বেছে নাও।',
+    'listening-hard':'কথোপকথনটা শোনো এবং প্রশ্নের উত্তর দাও।',
+    'listening-hard-text':'কথোপকথনটা শোনো এবং প্রশ্নের উত্তর দাও।',
+    'reading-notice':'অংশটা পড়ো এবং প্রশ্নের উত্তর দাও।'
+  };
+  return map[type] || 'সঠিক উত্তরটা বেছে নাও।';
+}
+
+/* ================= SECTION RANGES ================= */
+function buildSectionRanges(){
+  sectionRanges = {};
+  let offset = 0;
+  sectionOrder.forEach(sec=>{
+    const secQuestions = questions.filter(q=>q.section===sec);
+    // find contiguous indices - since we don't reorder by section on the flat array,
+    // we instead map indices per section explicitly
+    const idxs = [];
+    questions.forEach((q,i)=>{ if(q.section===sec) idxs.push(i); });
+    sectionRanges[sec] = { indices: idxs };
+  });
+  sectionOrder.forEach(sec=>{
+    if(sectionRanges[sec].indices.length>0){
+      sectionLastIndex[sec] = sectionRanges[sec].indices[0];
+    }
+  });
+}
+
+function sectionOf(i){
+  return questions[i] ? questions[i].section : 'Conversation';
+}
+
+/* ================= SIDEBAR ================= */
+function buildSidebarNums(){
+  const wrap = document.getElementById('qnums');
+  wrap.innerHTML = '';
+  const sec = sectionOf(current);
+  const idxs = sectionRanges[sec].indices;
+  idxs.forEach((i, pos)=>{
+    const d = document.createElement('div');
+    d.className = 'qnum';
+    d.textContent = pos+1;
+    d.id = 'qnum-'+i;
+    d.onclick = function(){ current = i; sectionLastIndex[sectionOf(i)] = i; buildSidebarNums(); renderQuestion(); };
+    wrap.appendChild(d);
+  });
+  updateSidebarStates();
+}
+
+function updateSidebarStates(){
+  const sec = sectionOf(current);
+  const idxs = sectionRanges[sec].indices;
+  idxs.forEach(i=>{
+    const el = document.getElementById('qnum-'+i);
+    if(!el) return;
+    el.classList.toggle('current', i===current);
+    el.classList.toggle('answered', answers[i]!==null);
+  });
+  const answeredInSection = idxs.filter(i=>answers[i]!==null).length;
+  const pct = idxs.length ? Math.round((answeredInSection/idxs.length)*100) : 0;
+  document.getElementById('progressFill').style.height = pct+'%';
+
+  document.querySelectorAll('.sec-btn').forEach(btn=>btn.classList.remove('active'));
+  const cls = sectionMeta[sec] ? sectionMeta[sec].cls : 'sec-vocab';
+  const btnEl = document.querySelector('.'+cls);
+  if(btnEl) btnEl.classList.add('active');
+}
+
+function jumpSection(secKey){
+  const secName = sectionOrder.find(s=>sectionMeta[s].key===secKey);
+  if(!secName || !sectionRanges[secName] || sectionRanges[secName].indices.length===0) return;
+  current = sectionLastIndex[secName] !== undefined ? sectionLastIndex[secName] : sectionRanges[secName].indices[0];
+  buildSidebarNums();
+  renderQuestion();
+}
+
+/* ================= RENDER QUESTION ================= */
+function renderQuestion(){
+  window.scrollTo(0,0);
+  document.querySelector('main').scrollTop = 0;
+  const q = questions[current];
+  const sec = q.section;
+  const idxs = sectionRanges[sec].indices;
+  const numInSection = idxs.indexOf(current)+1;
+
+  document.getElementById('qBadge').textContent = numInSection;
+  document.getElementById('instructionText').textContent = q.instruction;
+  currentLang = 0;
+  document.getElementById('translationBox').classList.remove('show');
+  document.getElementById('lang1Btn').classList.remove('on');
+  document.getElementById('lang2Btn').classList.remove('on');
+
+  const content = document.getElementById('contentArea');
+  const readingWrap = document.getElementById('readingWrap');
+  const optionsArea = document.getElementById('optionsArea');
+  const optionsAreaReading = document.getElementById('optionsAreaReading');
+
+  content.innerHTML = '';
+  content.style.display = 'block';
+  readingWrap.style.display = 'none';
+  optionsArea.style.display = 'flex';
+  optionsArea.innerHTML = '';
+  optionsAreaReading.innerHTML = '';
+
+  if(sec === 'Vocabulary'){
+    if(q.type === 'vocab-illustration'){
+      // ImageURL column may hold an emoji; questionText holds the hiragana prompt
+      const emoji = extractEmoji(q.questionText) || '❓';
+      content.innerHTML = '<div class="illustration-wrap"><div class="illustration-box"><span class="emoji-icon">'+emoji+'</span></div></div>';
+    } else {
+      content.innerHTML = '<div class="sentence-box" id="mainQText">'+escapeHtml(q.questionText)+'</div>';
+    }
+    renderOptions(q, optionsArea, false);
+
+  } else if(sec === 'Conversation'){
+    let dialogHtml = '<div class="dialog-wrap" id="mainQText">';
+    const lines = (q.questionText||'').split(' / ');
+    lines.forEach(line=>{
+      dialogHtml += '<div class="dialog-line"><div>'+fmtLine(line)+'</div></div>';
+    });
+    dialogHtml += '</div>';
+    content.innerHTML = dialogHtml;
+    renderOptions(q, optionsArea, true);
+
+  } else if(sec === 'Listening'){
+    content.innerHTML =
+      '<div style="font-size:17px;font-weight:700;margin-bottom:14px;" id="mainQText">'+escapeHtml(q.questionText)+'</div>'+
+      '<div class="audio-wrap">'+
+        '<button class="audio-btn" id="audioBtn" onclick="playAudio()">'+
+          '<svg viewBox="0 0 100 100" width="36" height="36">'+
+            '<polygon points="20,35 40,35 60,15 60,85 40,65 20,65" fill="#fff"/>'+
+            '<path d="M68 30 Q80 50 68 70" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round"/>'+
+            '<path d="M78 20 Q96 50 78 80" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round" opacity="0.7"/>'+
+          '</svg>'+
+        '</button>'+
+        '<div class="audio-hint" id="audioHint">タップして　音声を　聞いてください</div>'+
+        '<div class="audio-count" id="playCount">'+playCounts[current]+'回　聞きました</div>'+
+        '<div class="audio-count" id="answerTimer" style="color:var(--red);font-weight:700;"></div>'+
+      '</div>';
+    renderOptions(q, optionsArea, false);
+
+  } else if(sec === 'Reading'){
+    content.style.display = 'none';
+    optionsArea.style.display = 'none';
+    readingWrap.style.display = 'flex';
+    const colorClass = getCouponColorClass(q.topic);
+    document.getElementById('passageArea').innerHTML =
+      '<div class="passage-box '+colorClass+'">'+escapeHtml(q.audioScript||'').replace(/\n/g,'<br>')+'</div>';
+    const qBlockEl = readingWrap.querySelector('.q-block');
+    qBlockEl.textContent = q.questionText;
+    qBlockEl.id = 'mainQText';
+    renderOptions(q, optionsAreaReading, false);
+  }
+
+  document.getElementById('backBtn').disabled = (idxs.indexOf(current) === 0) && sectionOrder.indexOf(sec)===0;
+  document.getElementById('nextBtn').textContent =
+    (current === questions.length-1) ? 'Finish ✓' : 'Next ›';
+  updateSidebarStates();
+}
+
+function fmtLine(s){ return escapeHtml(s).replace(/\[\[(.+?)\]\]/g,'<u>$1</u>'); }
+function escapeHtml(str){
+  if(!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function extractEmoji(text){
+  const match = String(text||'').match(/([\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}])/u);
+  return match ? match[1] : null;
+}
+
+function getCouponColorClass(topic){
+  const t = (topic||'').toLowerCase();
+  if(t.indexOf('restaurant')!==-1 || t.indexOf('food')!==-1) return 'flyer-orange';
+  if(t.indexOf('shop')!==-1 || t.indexOf('sale')!==-1 || t.indexOf('supermarket')!==-1 || t.indexOf('convenience')!==-1) return 'flyer-teal';
+  if(t.indexOf('discount')!==-1 || t.indexOf('coupon')!==-1 || t.indexOf('membership')!==-1 || t.indexOf('gift')!==-1) return 'flyer-pink';
+  if(t.indexOf('hospital')!==-1 || t.indexOf('medicine')!==-1) return 'flyer-blue';
+  return 'flyer-orange';
+}
+
+/* ================= OPTIONS ================= */
+function renderOptions(q, wrap, numbered){
+  q.options.forEach((opt,i)=>{
+    const el = document.createElement('div');
+    el.className = 'opt o'+i;
+    if(answers[current]===q.optionLetters[i]) el.classList.add('selected');
+    el.innerHTML = '<div class="dot"></div><div>'+(numbered ? (i+1)+'. ' : '')+escapeHtml(opt)+'</div>';
+    el.onclick = (function(letter){ return function(){ selectOption(letter); }; })(q.optionLetters[i]);
+    wrap.appendChild(el);
+  });
+}
+
+function selectOption(letter){
+  answers[current] = letter;
+  renderQuestion();
+}
+
+function goNext(){
+  if(current < questions.length-1){
+    current++;
+    sectionLastIndex[sectionOf(current)] = current;
+    buildSidebarNums();
+    renderQuestion();
+  } else {
+    openFinishModal();
+  }
+}
+function goBack(){
+  if(current>0){
+    current--;
+    sectionLastIndex[sectionOf(current)] = current;
+    buildSidebarNums();
+    renderQuestion();
+  }
+}
+
+/* ================= LANGUAGE TOGGLE ================= */
+function toggleLang(n){
+  const q = questions[current];
+
+  if(n === 1){
+    // Language 1: swap ONLY the main question text between Japanese and Bengali. Nothing else changes.
+    const mainEl = document.getElementById('mainQText');
+    if(currentLang === 1){
+      currentLang = 0;
+      document.getElementById('lang1Btn').classList.remove('on');
+      if(mainEl) restoreOriginalQuestionText(q, mainEl);
+    } else {
+      currentLang = 1;
+      document.getElementById('lang1Btn').classList.add('on');
+      document.getElementById('lang2Btn').classList.remove('on');
+      if(mainEl){
+        if(q.section === 'Conversation'){
+          const lines = (q.questionTextBn||'').split(' / ');
+          let html = '';
+          lines.forEach(line=>{ html += '<div class="dialog-line"><div>'+fmtLine(line)+'</div></div>'; });
+          mainEl.innerHTML = html;
+        } else {
+          mainEl.textContent = q.questionTextBn || q.questionText;
+        }
+      }
+      document.getElementById('translationBox').classList.remove('show');
+    }
+    return;
+  }
+
+  // Language 2: keep prior behaviour (shows instruction line translation box)
+  const box = document.getElementById('translationBox');
+  if(currentLang === 2){
+    currentLang = 0;
+    box.classList.remove('show');
+    document.getElementById('lang2Btn').classList.remove('on');
+    return;
+  }
+  currentLang = 2;
+  document.getElementById('lang1Btn').classList.remove('on');
+  document.getElementById('lang2Btn').classList.add('on');
+  box.textContent = q.instruction;
+  box.classList.add('show');
+}
+
+function restoreOriginalQuestionText(q, mainEl){
+  if(q.section === 'Conversation'){
+    const lines = (q.questionText||'').split(' / ');
+    let html = '';
+    lines.forEach(line=>{ html += '<div class="dialog-line"><div>'+fmtLine(line)+'</div></div>'; });
+    mainEl.innerHTML = html;
+  } else {
+    mainEl.textContent = q.questionText;
+  }
+}
+
+/* ================= AUDIO (Text-to-Speech) — Listening ================= */
+let availableVoices = [];
+function loadVoices(){ availableVoices = window.speechSynthesis.getVoices(); }
+if('speechSynthesis' in window){
+  loadVoices();
+  window.speechSynthesis.onvoiceschanged = loadVoices;
+}
+function pickJapaneseVoice(){
+  let v = availableVoices.find(v=> v.lang === 'ja-JP');
+  if(!v) v = availableVoices.find(v=> v.lang && v.lang.toLowerCase().startsWith('ja'));
+  return v || null;
+}
+function playAudio(){
+  const q = questions[current];
+  const btn = document.getElementById('audioBtn');
+  if(!('speechSynthesis' in window)){
+    alert('このブラウザはAudio再生に対応していません。Chromeブラウザを使用してください。');
+    return;
+  }
+  window.speechSynthesis.cancel();
+  const lines = (q.audioScript||'').split(' / ').filter(l=>l.trim());
+  const voice = pickJapaneseVoice();
+  let i = 0;
+  btn.classList.add('playing');
+  const hintEl = document.getElementById('audioHint');
+  hintEl.textContent = '🔊 再生中...';
+
+  function speakNext(){
+    if(i>=lines.length){
+      btn.classList.remove('playing');
+      hintEl.textContent = '再生終了';
+      const secs = parseInt(q.seconds) || 15;
+      startAnswerCountdown(secs);
+      return;
+    }
+    const utter = new SpeechSynthesisUtterance(lines[i]);
+    utter.lang = 'ja-JP';
+    if(voice) utter.voice = voice;
+    utter.rate = 0.9;
+    utter.onend = function(){ i++; speakNext(); };
+    window.speechSynthesis.speak(utter);
+  }
+  speakNext();
+
+  playCounts[current]++;
+  const pc = document.getElementById('playCount');
+  if(pc) pc.textContent = playCounts[current]+'回　聞きました';
+}
+
+function startAnswerCountdown(seconds){
+  const el = document.getElementById('answerTimer');
+  if(!el) return;
+  let remaining = seconds;
+  el.textContent = '⏱ 残り時間: '+remaining+' 秒';
+  const interval = setInterval(function(){
+    remaining--;
+    if(remaining<=0){
+      el.textContent = '⏱ 時間切れ';
+      clearInterval(interval);
+    } else {
+      el.textContent = '⏱ 残り時間: '+remaining+' 秒';
+    }
+  },1000);
+}
+
+/* ================= TIMER ================= */
+let timeLeft;
+function startTimer(seconds){
+  timeLeft = seconds;
+  updateTimerDisplay();
+  window._timerInterval = setInterval(()=>{
+    timeLeft--;
+    updateTimerDisplay();
+    if(timeLeft<=300 && timeLeft>0){
+      document.getElementById('timerDisplay').style.color = '#ff4d4d';
+    }
+    if(timeLeft<=0){
+      clearInterval(window._timerInterval);
+      openFinishModal();
+      startFinishCountdown();
+    }
+  },1000);
+}
+function updateTimerDisplay(){
+  const h = Math.floor(timeLeft/3600);
+  const m = Math.floor((timeLeft%3600)/60).toString().padStart(2,'0');
+  const s = (timeLeft%60).toString().padStart(2,'0');
+  document.getElementById('timerDisplay').textContent = (h>0? h+':' : '')+m+':'+s;
+}
+
+/* ================= FINISH FLOW ================= */
+function openFinishModal(){
+  document.getElementById('finishModal').classList.add('show');
+}
+function closeFinishModal(){
+  document.getElementById('finishModal').classList.remove('show');
+}
+function startFinishCountdown(){
+  closeFinishModal();
+  document.getElementById('countdownModal').classList.add('show');
+  let c = 5;
+  document.getElementById('countdownNum').textContent = c;
+  const iv = setInterval(()=>{
+    c--;
+    document.getElementById('countdownNum').textContent = c;
+    if(c<=0){
+      clearInterval(iv);
+      document.getElementById('countdownModal').classList.remove('show');
+      submitAndShowResult();
+    }
+  },1000);
+}
+
+/* ================= SUBMIT (DEMO: local scoring, kono server call nai) ================= */
+function submitAndShowResult(){
+  clearInterval(window._timerInterval);
+  const res = computeLocalResult();
+  showResultFromServer(res);
+}
+
+function computeLocalResult(){
+  const marksPerQuestion = questions.length ? (totalMarks / questions.length) : 0;
+  let rawScore = 0;
+  const sectionScores = {};
+  const sectionTotals = {};
+  sectionOrder.forEach(function(sec){ sectionScores[sec]=0; sectionTotals[sec]=0; });
+
+  questions.forEach(function(q, i){
+    sectionTotals[q.section] = (sectionTotals[q.section]||0) + marksPerQuestion;
+    if(answers[i] !== null && answers[i] === q.correctAnswer){
+      rawScore += marksPerQuestion;
+      sectionScores[q.section] = (sectionScores[q.section]||0) + marksPerQuestion;
+    }
+  });
+
+  return {
+    success: true,
+    score: Math.round(rawScore),
+    totalMarks: totalMarks,
+    passed: rawScore >= passMark,
+    passMark: passMark,
+    sectionScores: sectionScores,
+    sectionTotals: sectionTotals
+  };
+}
+
+function showResultFromServer(res){
+  // res (from Apps Script, unmodified) = { score: rawScore, totalMarks, passed, passMark, sectionScores, sectionTotals }
+  const rawScore = res.score || 0;
+  const total = res.totalMarks || totalMarks || 250;
+
+  // Apply the deduction rule on the FRONTEND
+  // Rule: score below 200 -> minus 20 marks; 200 or more -> no deduction
+  const displayScore = (rawScore >= passMark) ? Math.min(rawScore, total) : Math.max(0, rawScore - 20);
+
+  let level = '*', levelLabel = '不合格 (Fail)', passed = false;
+  if(displayScore >= 200){ level='JFT (A2)'; levelLabel='JFT 合格 (Pass)'; passed=true; }
+  else if(displayScore >= 145){ level='N5'; levelLabel='N5 合格 (Pass)'; passed=true; }
+
+  let sectionPercentages = {};
+  const sectionScores = res.sectionScores || {};
+  const sectionTotals = res.sectionTotals || {};
+  Object.keys(sectionTotals).forEach(function(sec){
+    const secTotal = sectionTotals[sec] || 0;
+    const secGot = sectionScores[sec] || 0;
+    let pct = secTotal > 0 ? Math.round((secGot/secTotal)*100) : 0;
+    if(rawScore < passMark && secTotal > 0) pct = Math.max(0, Math.round(((displayScore/total))*100));
+    sectionPercentages[sec] = pct;
+  });
+
+  const finalRes = {
+    success: true,
+    score: displayScore,
+    totalMarks: total,
+    level: level,
+    levelLabel: levelLabel,
+    passed: passed,
+    sectionPercentages: sectionPercentages,
+    studentInfo: {
+      registrationNumber: currentStudentId,
+      name: currentStudentName || currentStudentId,
+      nationality: 'Bangladesh',
+      dob: '-'
+    },
+    testDate: new Date().toLocaleDateString('ja-JP')
+  };
+
+  renderCertificate(finalRes);
+  document.getElementById('resultModal').classList.add('show');
+}
+
+function renderCertificate(res){
+  const info = res.studentInfo || {};
+  document.getElementById('certRegNo').textContent = info.registrationNumber || currentStudentId;
+  document.getElementById('certName').textContent = info.name || '-';
+  document.getElementById('certNationality').textContent = info.nationality || '-';
+  document.getElementById('certDob').textContent = info.dob || '-';
+  document.getElementById('certDate').textContent = res.testDate || '-';
+
+  document.getElementById('certScore').textContent = res.score + ' 点 / ' + res.totalMarks;
+
+  // Position the marker on the 10-250 scale
+  const min = 10, max = 250;
+  let pct = ((res.score - min) / (max - min)) * 100;
+  pct = Math.max(0, Math.min(100, pct));
+  document.getElementById('certMarker').style.left = pct + '%';
+
+  const levelEl = document.getElementById('certLevelText');
+  levelEl.textContent = (res.levelLabel || '-') + '　判定: ' + (res.level || '-');
+  levelEl.className = 'cert-level ' + (res.passed ? 'pass' : 'fail');
+
+  const resultTextEl = document.getElementById('certResultText');
+  let jp = '', en = '';
+  if(res.score >= 200){
+    jp = 'あなたは日本語基礎テストにおいて、日常会話や生活に支障がない程度の日本語能力水準（JFT / A2レベル）に達していると判定されました。';
+    en = 'You were assessed to have reached a level of Japanese language proficiency (JFT / A2 level) to engage in everyday conversation without significant difficulties.';
+  } else if(res.score >= 145){
+    jp = 'あなたは日本語基礎テストにおいて、基本的な日本語能力水準（N5レベル）に達していると判定されました。';
+    en = 'You were assessed to have reached a basic level of Japanese language proficiency (N5 level).';
+  } else {
+    jp = '大変残念ながら、あなたは今回の日本語基礎テストにおいて合格基準に達しませんでした。';
+    en = 'Unfortunately, you did not reach the passing standard in this Basic Japanese Test.';
+  }
+  resultTextEl.innerHTML = jp + '<br><span class="en">' + en + '</span>';
+
+  const sectionNamesJp = {
+    Vocabulary: '文字と語彙 / Script and Vocabulary',
+    Conversation: '会話と表現 / Conversation and Expression',
+    Listening: '聴解 / Listening Comprehension',
+    Reading: '読解 / Reading Comprehension'
+  };
+  const order = ['Conversation'];
+  const barsEl = document.getElementById('certSectionBars');
+  barsEl.innerHTML = '';
+  order.forEach(sec=>{
+    const pctVal = (res.sectionPercentages && res.sectionPercentages[sec] !== undefined) ? res.sectionPercentages[sec] : 0;
+    const row = document.createElement('div');
+    row.className = 'cert-sec-row';
+    row.innerHTML =
+      '<div class="cert-sec-name">'+(sectionNamesJp[sec]||sec)+'</div>'+
+      '<div class="cert-sec-track"><div class="cert-sec-fill" style="width:'+pctVal+'%;"></div></div>'+
+      '<div class="cert-sec-pct">'+pctVal+'%</div>';
+    barsEl.appendChild(row);
+  });
+}
+
+function closeCertificate(){
+  document.getElementById('resultModal').classList.remove('show');
+}
+
+/* ================= WRONG-ANSWER REVIEW ================= */
+function getOptionText(q, letter){
+  if(!letter) return '';
+  const idx = q.optionLetters.indexOf(letter);
+  return idx>=0 ? q.options[idx] : '';
+}
+
+function openAnswerReview(){
+  const body = document.getElementById('answerReviewBody');
+  body.innerHTML = '';
+
+  const sectionNamesJp = {
+    Vocabulary: '文字と語彙 / Vocabulary',
+    Conversation: '会話と表現 / Conversation',
+    Listening: '聴解 / Listening',
+    Reading: '読解 / Reading'
+  };
+
+  const wrongList = [];
+  questions.forEach((q, idx)=>{
+    const given = answers[idx];
+    if(given === null || given !== q.correctAnswer){
+      wrongList.push({q, idx, given});
+    }
+  });
+
+  if(wrongList.length === 0){
+    body.innerHTML = '<div class="review-empty-msg">🎉 অভিনন্দন! আপনার সব উত্তর সঠিক ছিল।<br><span style="font-size:12px;color:#555;font-weight:400;">All your answers were correct.</span></div>';
+  } else {
+    wrongList.forEach(item=>{
+      const q = item.q;
+      const sec = q.section;
+      const numInSection = sectionRanges[sec].indices.indexOf(item.idx) + 1;
+      const qDisplayText = (q.section === 'Conversation') ? q.questionText.split(' / ').join(' ').replace(/\[\[|\]\]/g,'') : q.questionText;
+      const yourAnsText = item.given ? (item.given + '. ' + getOptionText(q, item.given)) : 'উত্তর দেওয়া হয়নি (Not answered)';
+      const correctAnsText = q.correctAnswer + '. ' + getOptionText(q, q.correctAnswer);
+
+      const div = document.createElement('div');
+      div.className = 'rv-item';
+      div.innerHTML =
+        '<div class="rv-qtag">'+(sectionNamesJp[sec]||sec)+' — Q'+numInSection+'</div>'+
+        '<div class="rv-qtext">'+escapeHtml(qDisplayText)+'</div>'+
+        '<div class="rv-ans-row"><div class="rv-ans-label rv-your">আপনার উত্তর:</div><div class="rv-your">'+escapeHtml(yourAnsText)+'</div></div>'+
+        '<div class="rv-ans-row"><div class="rv-ans-label rv-correct">সঠিক উত্তর:</div><div class="rv-correct">'+escapeHtml(correctAnsText)+'</div></div>';
+      body.appendChild(div);
+    });
+  }
+
+  document.getElementById('answerReviewModal').classList.add('show');
+}
+
+function closeAnswerReview(){
+  document.getElementById('answerReviewModal').classList.remove('show');
+}
+
+/* ================= PRIVACY GUARDS ================= */
+document.addEventListener('copy', e=> e.preventDefault());
+document.addEventListener('cut', e=> e.preventDefault());
+document.addEventListener('contextmenu', e=> e.preventDefault());
+document.addEventListener('keydown', e=>{
+  if((e.ctrlKey||e.metaKey) && ['c','x','u','s','p'].includes(e.key.toLowerCase())){
+    e.preventDefault();
+  }
+  if(e.key === 'F12') e.preventDefault();
+});
+
+</script>
+</body>
+</html>
